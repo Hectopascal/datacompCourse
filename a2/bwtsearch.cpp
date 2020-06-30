@@ -7,24 +7,25 @@
 #include <cstring>
 #include <vector>
 #include <map>
-#include <unordered_map>
 #include <array>
+#include <tuple>
 //void decodeInput(std::map<unsigned char,std::vector<mpfr_ptr>> &in, std::string input, int count);
 //std::string decodeInput(std::string &input);
 void printTables(void);
-//int constructTables(void);
 int constructTables(std::string &code);
-//char*  decodeInput(int startIdx);
-char*  decodeInput(int startIdx,std::string &code);
+
+
 std::ofstream outfile; 
 std::ifstream infile;
-std::unordered_map<char,int> cMap;
+std::map<char,int> cMap;
 std::vector<int> rank; //occurrences
+
+const int BUCKET_INTERVAL = 10000000; //10 mil char
 int FILELEN;
+std::vector<std::map<char,int>> occBucket;
+
 int main (int argc, char* argv[])
 {
-
-
     infile.open(argv[1]);
     outfile.open(argv[2]); 
 
@@ -38,22 +39,12 @@ int main (int argc, char* argv[])
     if (infile.is_open() && outfile.is_open()){
         buffer << infile.rdbuf();
         std::string code = buffer.str();
-        int startIdx = constructTables(code);
-        char* decoded = decodeInput(startIdx,code);
-        outfile<< decoded;
-        delete decoded;
         infile.close();
         outfile.close();
     }
     return 0;
 }
 
-// comparator function for sorting vectors
-bool sortVectorLex(const std::vector<char>& v1, const std::vector<char> &v2){
-    std::string s1{v1.begin(),v1.end()};
-    std::string s2{v2.begin(),v2.end()};
-    return s1 < s2;
-}
 int constructTables(void){
     int startPos;
     char c;
@@ -80,25 +71,81 @@ int constructTables(void){
     }
     return startPos;
 }
+// TODO 
+char getNextKey(char c){
+    return 'i';
+}
+
+int occ(char &c, int pos){
+    infile.clear();
+    int b = occBucket.size();
+    while ( b*BUCKET_INTERVAL > pos){
+        b--;
+    }
+
+    int count = 0;
+    if (b>=0) count = occBucket.at(b-1)[c];
+
+    infile.seekg(b*BUCKET_INTERVAL,infile.beg);
+    char d;
+
+    while(infile.get(d)){
+        if(d == c) ++count;
+    } 
+    return count;
+}
+
+std::pair<int,int> backwardSearch(std::string searchTerm){
+    int i   = searchTerm.length()-1;
+    char c  = searchTerm[i];
+    int First = cMap[c];
+    int Last  = cMap[getNextKey(c)]-1 ;
+    while (First < Last &&  i >= 1){
+        c = searchTerm[i-2];
+        First = cMap[c] + occ(c,First-1);
+        Last = cMap[c] + occ(c,Last);
+        --i;
+    }
+    if (Last<First){
+        return std::make_pair(0,0);
+    } 
+    return std::make_pair(First,Last);
+}
+
+
+
 int constructTables(std::string &code){
     int startPos;
     int N = code.length();
-    std::map<char,int> count;
+    int bucketFill = 0;
     for (int i = 0; i< N;++i){
-        if (count.find(code.at(i)) == count.end()){
+        if (cMap.find(code.at(i)) == cMap.end()){
             if (code.at(i)=='\n') startPos = i;
-            count.insert({code.at(i),1});
-            rank.push_back(0);
-        } else{
-            rank.push_back(count[code.at(i)]);
-            ++count[code.at(i)];            
+            cMap.insert({code.at(i),0});
         }
+
+        // bucket count of characters before current character
+        if (bucketFill >= BUCKET_INTERVAL){
+            occBucket.push_back(std::map<char,int>());
+            occBucket.at(occBucket.size()-1).insert({'A',cMap['A']});
+            occBucket.at(occBucket.size()-1).insert({'C',cMap['C']});
+            occBucket.at(occBucket.size()-1).insert({'T',cMap['T']});
+            occBucket.at(occBucket.size()-1).insert({'G',cMap['G']});
+            bucketFill = 0;
+        }
+        ++cMap[code.at(i)];            
+        ++bucketFill;
+
     }
-    //modify countMap to the less than values
+
+    //modify cMap to the less than values
     int runningValue = 0;
-    for (std::map<char,int>::iterator it = count.begin(); it != count.end(); ++it){
-        cMap.insert({it->first,runningValue});
-        runningValue += it->second;
+    int tmp = 0;
+    for (std::map<char,int>::iterator it = cMap.begin(); it != cMap.end(); ++it){
+        if (it->first == '\n') continue;
+        tmp = it->second;
+        it->second = runningValue;
+        runningValue += tmp;
     }
     return startPos;
 }
@@ -111,58 +158,3 @@ void printTables(void){
         std::cout << tup.first << " " << tup.second << std::endl;
     }
 }
-
-char* decodeInput(int startIdx, std::string &code){
-    char* decoded = new char[FILELEN+1];
-    char curVal = '\n';
-    int valIdx = startIdx;
-    decoded[FILELEN] = '\0';
-    for(int i = FILELEN-1; i>= 0; --i){
-        decoded[i] = curVal;
-        valIdx = rank.at(valIdx)+cMap[curVal];
-        curVal = code.at(valIdx);
-    //    std::cout<<curVal<<std::endl;
-    }
-//std::string s(decoded);
-    return decoded;
-}
-
-char* decodeInput(int startIdx){
-    char* decoded = new char[FILELEN+1];
-    char curVal = '\n';
-    int valIdx = startIdx;
-    decoded[FILELEN] = '\0';
-    infile.clear();
-    for(int i = FILELEN-1; i>= 0; --i){
-        decoded[i] = curVal;
-        valIdx = rank.at(valIdx)+cMap[curVal];
-        infile.seekg(valIdx, infile.beg);
-        infile.get(curVal);
-    //    std::cout<<curVal<<std::endl;
-    }
-//std::string s(decoded);
-    return decoded;
-}
-/*
-
-//dumb method
-std::string decodeInput1(std::string input){
-    int N = input.length();
-    std::vector<std::vector<char>> matrix(N,std::vector<char>());    
-    for (int i = 0; i < N; ++i){
-        for(int j = 0; j<N; ++j){
-            matrix.at(j).insert(matrix.at(j).begin() ,input.at(j));
-        } 
-        std::sort(matrix.begin(),matrix.end(),sortVectorLex);
-
-    }
-      
-    for(int k =0;k < N; ++k){
-        if (matrix.at(k).back() == '\n'){
-            std::string s{matrix.at(k).begin(),matrix.at(k).end()};
-            return s;
-        }
-    }
-    return "";
-}
-*/
