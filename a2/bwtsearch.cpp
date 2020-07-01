@@ -12,10 +12,9 @@
 //void decodeInput(std::map<unsigned char,std::vector<mpfr_ptr>> &in, std::string input, int count);
 //std::string decodeInput(std::string &input);
 void printTables(void);
-int constructTables(std::string &code);
+void constructTables(std::string &code);
+int bwtSearch(std::string &searchTerm);
 
-
-std::ofstream outfile; 
 std::ifstream infile;
 std::map<char,int> cMap;
 std::vector<int> rank; //occurrences
@@ -24,10 +23,8 @@ const int BUCKET_INTERVAL = 10000000; //10 mil char
 int FILELEN;
 std::vector<std::map<char,int>> occBucket;
 
-int main (int argc, char* argv[])
-{
+int main (int argc, char* argv[]) {
     infile.open(argv[1]);
-    outfile.open(argv[2]); 
 
     // find file length;
     infile.seekg (0, infile.end);
@@ -36,95 +33,91 @@ int main (int argc, char* argv[])
     infile.clear();
     std::cout<< FILELEN <<std::endl;
     std::stringstream buffer;
-    if (infile.is_open() && outfile.is_open()){
+    std::string line;
+    if (infile.is_open()){
         buffer << infile.rdbuf();
         std::string code = buffer.str();
+        constructTables(code);
+        while(std::getline(std::cin, line)){
+            std::cout<< bwtSearch(line) << std::endl;
+        }
+    
         infile.close();
-        outfile.close();
+    }
+    
+    
+        return 0;
+}
+
+char getNextKey(char c){
+    char prev = '\0';
+    for (auto tup : cMap){
+        if (prev == c) return tup.first;
+        prev = tup.first;
     }
     return 0;
 }
 
-int constructTables(void){
-    int startPos;
-    char c;
-    int i = 0;
-    std::map<char,int> count;
-    infile.clear();
-    infile.seekg(0, infile.beg);
-    while (infile.get(c)){
-        if (count.find(c) == count.end()){
-            if (c=='\n') startPos = i;
-            count.insert({c,1});
-            rank.push_back(0);
-        } else{
-            rank.push_back(count[c]);
-            ++count[c];            
-        }
-        ++i;
-    }
-    //modify countMap to the less than values
-    int runningValue = 0;
-    for (std::map<char,int>::iterator it = count.begin(); it != count.end(); ++it){
-        cMap.insert({it->first,runningValue});
-        runningValue += it->second;
-    }
-    return startPos;
-}
-// TODO 
-char getNextKey(char c){
-    return 'i';
-}
-
 int occ(char &c, int pos){
     infile.clear();
-    int b = occBucket.size();
-    while ( b*BUCKET_INTERVAL > pos){
-        b--;
-    }
-
+    std::cout<<"char "<< c <<" pos "<< pos;
     int count = 0;
-    if (b>=0) count = occBucket.at(b-1)[c];
-
-    infile.seekg(b*BUCKET_INTERVAL,infile.beg);
+    int startPos = 0;
+    if (pos > BUCKET_INTERVAL){
+        int b = occBucket.size();
+        while ( b*BUCKET_INTERVAL > pos){
+            --b;
+        }
+        count = occBucket.at(b-1)[c];
+        startPos = b*BUCKET_INTERVAL;
+        pos = pos-startPos;
+    }
+    infile.seekg(startPos,infile.beg);
     char d;
-
-    while(infile.get(d)){
+    while(infile.get(d) && pos >= 0){
         if(d == c) ++count;
-    } 
+        --pos;
+    }
+    std::cout<< " count " <<count<<std::endl;
+    infile.clear(); 
     return count;
 }
 
-std::pair<int,int> backwardSearch(std::string searchTerm){
+int bwtSearch(std::string &searchTerm){
+    std::cout << "Searching: "<< searchTerm<<std::endl;
     int i   = searchTerm.length()-1;
     char c  = searchTerm[i];
     int First = cMap[c];
-    int Last  = cMap[getNextKey(c)]-1 ;
-    while (First < Last &&  i >= 1){
-        c = searchTerm[i-2];
+
+    int Last  = cMap[getNextKey(c)]-1;
+    if (Last <= 0) Last = FILELEN-1;
+    //std::cout << First << "---FL---" << Last<<std::endl; 
+    while (First <= Last &&  i >= 1){
+        c = searchTerm[i-1];
         First = cMap[c] + occ(c,First-1);
-        Last = cMap[c] + occ(c,Last);
+        Last = cMap[c] + occ(c,Last)-1;
+        //std::cout << First << "---FL---" << Last<<std::endl; 
         --i;
     }
     if (Last<First){
-        return std::make_pair(0,0);
-    } 
-    return std::make_pair(First,Last);
+        return 0;
+    } else {
+        return Last-First+1;
+    }
 }
 
 
 
-int constructTables(std::string &code){
-    int startPos;
+void constructTables(std::string &code){
     int N = code.length();
+    std::cout<< "TOTAL BWT LENGTH " <<N << " FILELEN " << FILELEN<<std::endl;
     int bucketFill = 0;
     for (int i = 0; i< N;++i){
         if (cMap.find(code.at(i)) == cMap.end()){
-            if (code.at(i)=='\n') startPos = i;
             cMap.insert({code.at(i),0});
         }
 
-        // bucket count of characters before current character
+        // cache count of characters before current character for larger files
         if (bucketFill >= BUCKET_INTERVAL){
             occBucket.push_back(std::map<char,int>());
             occBucket.at(occBucket.size()-1).insert({'A',cMap['A']});
@@ -142,19 +135,29 @@ int constructTables(std::string &code){
     int runningValue = 0;
     int tmp = 0;
     for (std::map<char,int>::iterator it = cMap.begin(); it != cMap.end(); ++it){
-        if (it->first == '\n') continue;
+        if (it->first == '\n'){
+            ++runningValue;
+            continue;
+        }
         tmp = it->second;
         it->second = runningValue;
         runningValue += tmp;
     }
-    return startPos;
+    cMap.erase('\n');
+    printTables();
 }
 void printTables(void){
-    for (int i = 0; i< FILELEN; ++i){
-        std::cout<< (rank.at(i)) << " ";
-    }
+    //for (int i = 0; i< FILELEN; ++i){
+    //    std::cout<< (rank.at(i)) << " ";
+    //}
+    std::cout<< "cMap size " << cMap.size() << " occBucket size " << occBucket.size();
     std::cout <<std::endl;
     for (auto tup : cMap){
         std::cout << tup.first << " " << tup.second << std::endl;
+    }
+    for (auto v : occBucket){
+        for (auto tup : v){
+            std::cout<< tup.first << " " << tup.second<< std::endl;
+        }
     }
 }
