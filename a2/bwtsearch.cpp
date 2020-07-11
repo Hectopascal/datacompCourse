@@ -60,7 +60,7 @@ char getNextKey(char c){
 
 int occ(char &c, int pos){
     infile.clear();
-    std::cout<<"char "<< c <<" pos "<< pos;
+    //std::cout<<"char "<< c <<" pos "<< pos;
     int count = 0;
     int startPos = 0;
     if (pos > BUCKET_INTERVAL){
@@ -78,13 +78,13 @@ int occ(char &c, int pos){
         if(d == c) ++count;
         --pos;
     }
-    std::cout<< " count " <<count<<std::endl;
+    //std::cout<< " count " <<count<<std::endl;
     infile.clear(); 
     return count;
 }
 
 int bwtSearch(std::string &searchTerm){
-    std::cout << "Searching: "<< searchTerm<<std::endl;
+    //std::cout << "Searching: "<< searchTerm<<std::endl;
     int i   = searchTerm.length()-1;
     char c  = searchTerm[i];
     int First = cMap[c];
@@ -110,7 +110,6 @@ int bwtSearch(std::string &searchTerm){
 
 void constructTables(std::string &code){
     int N = code.length();
-    std::cout<< "TOTAL BWT LENGTH " <<N << " FILELEN " << FILELEN<<std::endl;
     int bucketFill = 0;
     for (int i = 0; i< N;++i){
         if (cMap.find(code.at(i)) == cMap.end()){
