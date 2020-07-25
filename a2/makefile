@@ -1,9 +1,9 @@
 default: bwtdecode bwtsearch
 
-bwtdecode: bwtdecode.c
-	gcc -Wall -Werror -funroll-loops -o bwtdecode bwtdecode.c  
+bwtdecode: bwtdecode.c helper.h
+	gcc -O3 -Wall -Werror bwtdecode.c helper.h -o bwtdecode   
 bwtsearch: bwtsearch.cpp
-	g++ -Wall -Werror -o bwtsearch bwtsearch.cpp  
+	g++ -Wall -Werror -O3 -o bwtsearch bwtsearch.cpp  
  	
  	
 

@@ -1,0 +1,707 @@
+desc: --pages-as-heap=yes --massif-out-file=memory.out
+cmd: ./bwtdecode data/dna-5MB.bwt 5MB.txt
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=0
+mem_heap_B=4096
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=1
+#-----------
+time=0
+mem_heap_B=12288
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=2
+#-----------
+time=0
+mem_heap_B=16384
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=3
+#-----------
+time=0
+mem_heap_B=24576
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=4
+#-----------
+time=0
+mem_heap_B=28672
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=5
+#-----------
+time=0
+mem_heap_B=151552
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=6
+#-----------
+time=0
+mem_heap_B=184320
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=7
+#-----------
+time=0
+mem_heap_B=192512
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=8
+#-----------
+time=0
+mem_heap_B=196608
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=9
+#-----------
+time=0
+mem_heap_B=200704
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=detailed
+n1: 200704 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n0: 200704 0xFFFFFFFFFFFFFFFF: ???
+#-----------
+snapshot=10
+#-----------
+time=0
+mem_heap_B=204800
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=11
+#-----------
+time=0
+mem_heap_B=212992
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=12
+#-----------
+time=0
+mem_heap_B=217088
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=13
+#-----------
+time=0
+mem_heap_B=221184
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=14
+#-----------
+time=0
+mem_heap_B=221184
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=detailed
+n2: 221184 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n0: 217088 0xFFFFFFFFFFFFFFFF: ???
+ n1: 4096 0x400108F: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+  n1: 4096 0x1: ???
+   n1: 4096 0x1FFF000435: ???
+    n1: 4096 0x1FFF000441: ???
+     n0: 4096 0x1FFF000452: ???
+#-----------
+snapshot=15
+#-----------
+time=0
+mem_heap_B=217088
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=16
+#-----------
+time=0
+mem_heap_B=217088
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=17
+#-----------
+time=23298
+mem_heap_B=237568
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=18
+#-----------
+time=23393
+mem_heap_B=241664
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=19
+#-----------
+time=23461
+mem_heap_B=245760
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=20
+#-----------
+time=23526
+mem_heap_B=253952
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=21
+#-----------
+time=24132
+mem_heap_B=258048
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=22
+#-----------
+time=27124
+mem_heap_B=458752
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=23
+#-----------
+time=29600
+mem_heap_B=466944
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=24
+#-----------
+time=30337
+mem_heap_B=491520
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=detailed
+n3: 491520 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n4: 274432 0x401A6F2: mmap (mmap64.c:52)
+  n2: 204800 0x401007B: _dl_sysdep_read_whole_file (dl-misc.c:57)
+   n1: 200704 0x4016136: _dl_load_cache_lookup (dl-cache.c:201)
+    n1: 200704 0x4008D09: _dl_map_object (dl-load.c:2332)
+     n1: 200704 0x40012F3: map_doit (rtld.c:592)
+      n1: 200704 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+       n1: 200704 0x40195CD: _dl_catch_error (dl-error-skeleton.c:215)
+        n1: 200704 0x400128D: do_preload (rtld.c:763)
+         n1: 200704 0x40050B8: dl_main (rtld.c:1696)
+          n1: 200704 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+           n1: 200704 0x4002116: _dl_start (rtld.c:415)
+            n1: 200704 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+             n1: 200704 0x1: ???
+              n1: 200704 0x1FFF000435: ???
+               n1: 200704 0x1FFF000441: ???
+                n0: 200704 0x1FFF000452: ???
+   n0: 4096 in 1 place, below massif's threshold (1.00%)
+  n1: 45056 0x40061EF: _dl_map_object_from_fd (dl-map-segments.h:56)
+   n1: 45056 0x4008A8B: _dl_map_object (dl-load.c:2466)
+    n1: 45056 0x40012F3: map_doit (rtld.c:592)
+     n1: 45056 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+      n1: 45056 0x40195CD: _dl_catch_error (dl-error-skeleton.c:215)
+       n2: 45056 0x400128D: do_preload (rtld.c:763)
+        n1: 24576 0x40050B8: dl_main (rtld.c:1696)
+         n1: 24576 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+          n1: 24576 0x4002116: _dl_start (rtld.c:415)
+           n1: 24576 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+            n1: 24576 0x1: ???
+             n1: 24576 0x1FFF000435: ???
+              n1: 24576 0x1FFF000441: ???
+               n0: 24576 0x1FFF000452: ???
+        n1: 20480 0x400250D: handle_ld_preload (rtld.c:861)
+         n1: 20480 0x4005068: dl_main (rtld.c:1625)
+          n1: 20480 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+           n1: 20480 0x4002116: _dl_start (rtld.c:415)
+            n1: 20480 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+             n1: 20480 0x1: ???
+              n1: 20480 0x1FFF000435: ???
+               n1: 20480 0x1FFF000441: ???
+                n0: 20480 0x1FFF000452: ???
+  n1: 16384 0x4006342: _dl_map_object_from_fd (dl-map-segments.h:94)
+   n1: 16384 0x4008A8B: _dl_map_object (dl-load.c:2466)
+    n1: 16384 0x40012F3: map_doit (rtld.c:592)
+     n1: 16384 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+      n1: 16384 0x40195CD: _dl_catch_error (dl-error-skeleton.c:215)
+       n1: 16384 0x400128D: do_preload (rtld.c:763)
+        n1: 16384 0x400250D: handle_ld_preload (rtld.c:861)
+         n1: 16384 0x4005068: dl_main (rtld.c:1625)
+          n1: 16384 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+           n1: 16384 0x4002116: _dl_start (rtld.c:415)
+            n1: 16384 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+             n1: 16384 0x1: ???
+              n1: 16384 0x1FFF000435: ???
+               n1: 16384 0x1FFF000441: ???
+                n0: 16384 0x1FFF000452: ???
+  n1: 8192 0x4018E15: malloc (dl-minimal.c:73)
+   n1: 8192 0x400B2AC: _dl_new_object (dl-object.c:73)
+    n1: 8192 0x4005E46: _dl_map_object_from_fd (dl-load.c:1001)
+     n1: 8192 0x4008A8B: _dl_map_object (dl-load.c:2466)
+      n1: 8192 0x40012F3: map_doit (rtld.c:592)
+       n1: 8192 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+        n1: 8192 0x40195CD: _dl_catch_error (dl-error-skeleton.c:215)
+         n1: 8192 0x400128D: do_preload (rtld.c:763)
+          n1: 8192 0x40050B8: dl_main (rtld.c:1696)
+           n1: 8192 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+            n1: 8192 0x4002116: _dl_start (rtld.c:415)
+             n1: 8192 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+              n1: 8192 0x1: ???
+               n1: 8192 0x1FFF000435: ???
+                n1: 8192 0x1FFF000441: ???
+                 n0: 8192 0x1FFF000452: ???
+ n0: 217088 0xFFFFFFFFFFFFFFFF: ???
+ n0: 0 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=25
+#-----------
+time=30432
+mem_heap_B=495616
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=26
+#-----------
+time=30500
+mem_heap_B=499712
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=27
+#-----------
+time=30565
+mem_heap_B=507904
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=28
+#-----------
+time=31106
+mem_heap_B=512000
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=29
+#-----------
+time=31624
+mem_heap_B=512000
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=detailed
+n3: 512000 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n5: 294912 0x401A6F2: mmap (mmap64.c:52)
+  n2: 204800 0x401007B: _dl_sysdep_read_whole_file (dl-misc.c:57)
+   n1: 200704 0x4016136: _dl_load_cache_lookup (dl-cache.c:201)
+    n1: 200704 0x4008D09: _dl_map_object (dl-load.c:2332)
+     n1: 200704 0x40012F3: map_doit (rtld.c:592)
+      n1: 200704 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+       n1: 200704 0x40195CD: _dl_catch_error (dl-error-skeleton.c:215)
+        n1: 200704 0x400128D: do_preload (rtld.c:763)
+         n1: 200704 0x40050B8: dl_main (rtld.c:1696)
+          n1: 200704 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+           n1: 200704 0x4002116: _dl_start (rtld.c:415)
+            n1: 200704 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+             n1: 200704 0x1: ???
+              n1: 200704 0x1FFF000435: ???
+               n1: 200704 0x1FFF000441: ???
+                n0: 200704 0x1FFF000452: ???
+   n0: 4096 in 1 place, below massif's threshold (1.00%)
+  n1: 45056 0x40061EF: _dl_map_object_from_fd (dl-map-segments.h:56)
+   n1: 45056 0x4008A8B: _dl_map_object (dl-load.c:2466)
+    n1: 45056 0x40012F3: map_doit (rtld.c:592)
+     n1: 45056 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+      n1: 45056 0x40195CD: _dl_catch_error (dl-error-skeleton.c:215)
+       n2: 45056 0x400128D: do_preload (rtld.c:763)
+        n1: 24576 0x40050B8: dl_main (rtld.c:1696)
+         n1: 24576 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+          n1: 24576 0x4002116: _dl_start (rtld.c:415)
+           n1: 24576 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+            n1: 24576 0x1: ???
+             n1: 24576 0x1FFF000435: ???
+              n1: 24576 0x1FFF000441: ???
+               n0: 24576 0x1FFF000452: ???
+        n1: 20480 0x400250D: handle_ld_preload (rtld.c:861)
+         n1: 20480 0x4005068: dl_main (rtld.c:1625)
+          n1: 20480 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+           n1: 20480 0x4002116: _dl_start (rtld.c:415)
+            n1: 20480 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+             n1: 20480 0x1: ???
+              n1: 20480 0x1FFF000435: ???
+               n1: 20480 0x1FFF000441: ???
+                n0: 20480 0x1FFF000452: ???
+  n1: 32768 0x4006342: _dl_map_object_from_fd (dl-map-segments.h:94)
+   n1: 32768 0x4008A8B: _dl_map_object (dl-load.c:2466)
+    n1: 32768 0x40012F3: map_doit (rtld.c:592)
+     n1: 32768 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+      n1: 32768 0x40195CD: _dl_catch_error (dl-error-skeleton.c:215)
+       n2: 32768 0x400128D: do_preload (rtld.c:763)
+        n1: 16384 0x400250D: handle_ld_preload (rtld.c:861)
+         n1: 16384 0x4005068: dl_main (rtld.c:1625)
+          n1: 16384 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+           n1: 16384 0x4002116: _dl_start (rtld.c:415)
+            n1: 16384 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+             n1: 16384 0x1: ???
+              n1: 16384 0x1FFF000435: ???
+               n1: 16384 0x1FFF000441: ???
+                n0: 16384 0x1FFF000452: ???
+        n1: 16384 0x40050B8: dl_main (rtld.c:1696)
+         n1: 16384 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+          n1: 16384 0x4002116: _dl_start (rtld.c:415)
+           n1: 16384 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+            n1: 16384 0x1: ???
+             n1: 16384 0x1FFF000435: ???
+              n1: 16384 0x1FFF000441: ???
+               n0: 16384 0x1FFF000452: ???
+  n1: 8192 0x4018E15: malloc (dl-minimal.c:73)
+   n1: 8192 0x400B2AC: _dl_new_object (dl-object.c:73)
+    n1: 8192 0x4005E46: _dl_map_object_from_fd (dl-load.c:1001)
+     n1: 8192 0x4008A8B: _dl_map_object (dl-load.c:2466)
+      n1: 8192 0x40012F3: map_doit (rtld.c:592)
+       n1: 8192 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+        n1: 8192 0x40195CD: _dl_catch_error (dl-error-skeleton.c:215)
+         n1: 8192 0x400128D: do_preload (rtld.c:763)
+          n1: 8192 0x40050B8: dl_main (rtld.c:1696)
+           n1: 8192 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+            n1: 8192 0x4002116: _dl_start (rtld.c:415)
+             n1: 8192 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+              n1: 8192 0x1: ???
+               n1: 8192 0x1FFF000435: ???
+                n1: 8192 0x1FFF000441: ???
+                 n0: 8192 0x1FFF000452: ???
+  n0: 4096 in 1 place, below massif's threshold (1.00%)
+ n0: 217088 0xFFFFFFFFFFFFFFFF: ???
+ n0: 0 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=30
+#-----------
+time=31624
+mem_heap_B=507904
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=31
+#-----------
+time=35050
+mem_heap_B=2347008
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=32
+#-----------
+time=35144
+mem_heap_B=3690496
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=33
+#-----------
+time=35212
+mem_heap_B=4001792
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=34
+#-----------
+time=35277
+mem_heap_B=4026368
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=35
+#-----------
+time=35594
+mem_heap_B=4042752
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=36
+#-----------
+time=40522
+mem_heap_B=4063232
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=37
+#-----------
+time=40617
+mem_heap_B=4067328
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=38
+#-----------
+time=40685
+mem_heap_B=4071424
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=39
+#-----------
+time=40750
+mem_heap_B=4079616
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=detailed
+n3: 4079616 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n4: 3862528 0x401A6F2: mmap (mmap64.c:52)
+  n1: 1904640 0x40061EF: _dl_map_object_from_fd (dl-map-segments.h:56)
+   n2: 1904640 0x4008A8B: _dl_map_object (dl-load.c:2466)
+    n1: 1859584 0x400D290: openaux (dl-deps.c:64)
+     n1: 1859584 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+      n1: 1859584 0x400D604: _dl_map_object_deps (dl-deps.c:248)
+       n1: 1859584 0x4003AF9: dl_main (rtld.c:1733)
+        n1: 1859584 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+         n1: 1859584 0x4002116: _dl_start (rtld.c:415)
+          n1: 1859584 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+           n1: 1859584 0x1: ???
+            n1: 1859584 0x1FFF000435: ???
+             n1: 1859584 0x1FFF000441: ???
+              n0: 1859584 0x1FFF000452: ???
+    n1: 45056 0x40012F3: map_doit (rtld.c:592)
+     n1: 45056 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+      n1: 45056 0x40195CD: _dl_catch_error (dl-error-skeleton.c:215)
+       n1: 45056 0x400128D: do_preload (rtld.c:763)
+        n0: 45056 in 2 places, all below massif's threshold (1.00%)
+  n1: 1728512 0x4006342: _dl_map_object_from_fd (dl-map-segments.h:94)
+   n2: 1728512 0x4008A8B: _dl_map_object (dl-load.c:2466)
+    n1: 1695744 0x400D290: openaux (dl-deps.c:64)
+     n1: 1695744 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+      n1: 1695744 0x400D604: _dl_map_object_deps (dl-deps.c:248)
+       n1: 1695744 0x4003AF9: dl_main (rtld.c:1733)
+        n1: 1695744 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+         n1: 1695744 0x4002116: _dl_start (rtld.c:415)
+          n1: 1695744 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+           n1: 1695744 0x1: ???
+            n1: 1695744 0x1FFF000435: ???
+             n1: 1695744 0x1FFF000441: ???
+              n0: 1695744 0x1FFF000452: ???
+    n0: 32768 in 1 place, below massif's threshold (1.00%)
+  n2: 200704 0x401007B: _dl_sysdep_read_whole_file (dl-misc.c:57)
+   n1: 200704 0x4016136: _dl_load_cache_lookup (dl-cache.c:201)
+    n1: 200704 0x4008D09: _dl_map_object (dl-load.c:2332)
+     n1: 200704 0x40012F3: map_doit (rtld.c:592)
+      n1: 200704 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+       n1: 200704 0x40195CD: _dl_catch_error (dl-error-skeleton.c:215)
+        n1: 200704 0x400128D: do_preload (rtld.c:763)
+         n1: 200704 0x40050B8: dl_main (rtld.c:1696)
+          n1: 200704 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+           n1: 200704 0x4002116: _dl_start (rtld.c:415)
+            n1: 200704 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+             n1: 200704 0x1: ???
+              n1: 200704 0x1FFF000435: ???
+               n1: 200704 0x1FFF000441: ???
+                n0: 200704 0x1FFF000452: ???
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+  n0: 28672 in 2 places, all below massif's threshold (1.00%)
+ n0: 217088 0xFFFFFFFFFFFFFFFF: ???
+ n0: 0 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=40
+#-----------
+time=52913
+mem_heap_B=4091904
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=41
+#-----------
+time=156006
+mem_heap_B=4091904
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=detailed
+n3: 4091904 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n4: 3874816 0x401A6F2: mmap (mmap64.c:52)
+  n1: 1904640 0x40061EF: _dl_map_object_from_fd (dl-map-segments.h:56)
+   n2: 1904640 0x4008A8B: _dl_map_object (dl-load.c:2466)
+    n1: 1859584 0x400D290: openaux (dl-deps.c:64)
+     n1: 1859584 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+      n1: 1859584 0x400D604: _dl_map_object_deps (dl-deps.c:248)
+       n1: 1859584 0x4003AF9: dl_main (rtld.c:1733)
+        n1: 1859584 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+         n1: 1859584 0x4002116: _dl_start (rtld.c:415)
+          n1: 1859584 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+           n1: 1859584 0x1: ???
+            n1: 1859584 0x1FFF000435: ???
+             n1: 1859584 0x1FFF000441: ???
+              n0: 1859584 0x1FFF000452: ???
+    n1: 45056 0x40012F3: map_doit (rtld.c:592)
+     n1: 45056 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+      n1: 45056 0x40195CD: _dl_catch_error (dl-error-skeleton.c:215)
+       n1: 45056 0x400128D: do_preload (rtld.c:763)
+        n0: 45056 in 2 places, all below massif's threshold (1.00%)
+  n1: 1728512 0x4006342: _dl_map_object_from_fd (dl-map-segments.h:94)
+   n2: 1728512 0x4008A8B: _dl_map_object (dl-load.c:2466)
+    n1: 1695744 0x400D290: openaux (dl-deps.c:64)
+     n1: 1695744 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+      n1: 1695744 0x400D604: _dl_map_object_deps (dl-deps.c:248)
+       n1: 1695744 0x4003AF9: dl_main (rtld.c:1733)
+        n1: 1695744 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+         n1: 1695744 0x4002116: _dl_start (rtld.c:415)
+          n1: 1695744 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+           n1: 1695744 0x1: ???
+            n1: 1695744 0x1FFF000435: ???
+             n1: 1695744 0x1FFF000441: ???
+              n0: 1695744 0x1FFF000452: ???
+    n0: 32768 in 1 place, below massif's threshold (1.00%)
+  n2: 200704 0x401007B: _dl_sysdep_read_whole_file (dl-misc.c:57)
+   n1: 200704 0x4016136: _dl_load_cache_lookup (dl-cache.c:201)
+    n1: 200704 0x4008D09: _dl_map_object (dl-load.c:2332)
+     n1: 200704 0x40012F3: map_doit (rtld.c:592)
+      n1: 200704 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+       n1: 200704 0x40195CD: _dl_catch_error (dl-error-skeleton.c:215)
+        n1: 200704 0x400128D: do_preload (rtld.c:763)
+         n1: 200704 0x40050B8: dl_main (rtld.c:1696)
+          n1: 200704 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+           n1: 200704 0x4002116: _dl_start (rtld.c:415)
+            n1: 200704 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+             n1: 200704 0x1: ???
+              n1: 200704 0x1FFF000435: ???
+               n1: 200704 0x1FFF000441: ???
+                n0: 200704 0x1FFF000452: ???
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+  n0: 40960 in 2 places, all below massif's threshold (1.00%)
+ n0: 217088 0xFFFFFFFFFFFFFFFF: ???
+ n0: 0 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=42
+#-----------
+time=156006
+mem_heap_B=4087808
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=43
+#-----------
+time=230995
+mem_heap_B=4026368
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=44
+#-----------
+time=236443
+mem_heap_B=9027584
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=45
+#-----------
+time=236755
+mem_heap_B=29028352
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=46
+#-----------
+time=206852561
+mem_heap_B=29028352
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=peak
+n3: 29028352 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n1: 25001984 0x495D132: mmap (mmap64.c:52)
+  n1: 25001984 0x48EB4B2: sysmalloc (malloc.c:2313)
+   n1: 25001984 0x48EC2C7: _int_malloc (malloc.c:4133)
+    n2: 25001984 0x48ED3E1: malloc (malloc.c:3049)
+     n1: 20000768 0x109434: initializeGlobal (in /tmp_amd/kamen/export/kamen/2/z5013079/COMP9319/a2/bwtdecode)
+      n0: 20000768 0x1091A6: main (in /tmp_amd/kamen/export/kamen/2/z5013079/COMP9319/a2/bwtdecode)
+     n1: 5001216 0x109420: initializeGlobal (in /tmp_amd/kamen/export/kamen/2/z5013079/COMP9319/a2/bwtdecode)
+      n0: 5001216 0x1091A6: main (in /tmp_amd/kamen/export/kamen/2/z5013079/COMP9319/a2/bwtdecode)
+ n3: 3674112 0x401A6F2: mmap (mmap64.c:52)
+  n1: 1904640 0x40061EF: _dl_map_object_from_fd (dl-map-segments.h:56)
+   n2: 1904640 0x4008A8B: _dl_map_object (dl-load.c:2466)
+    n1: 1859584 0x400D290: openaux (dl-deps.c:64)
+     n1: 1859584 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+      n1: 1859584 0x400D604: _dl_map_object_deps (dl-deps.c:248)
+       n1: 1859584 0x4003AF9: dl_main (rtld.c:1733)
+        n1: 1859584 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+         n1: 1859584 0x4002116: _dl_start (rtld.c:415)
+          n1: 1859584 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+           n1: 1859584 0x1: ???
+            n1: 1859584 0x1FFF000435: ???
+             n1: 1859584 0x1FFF000441: ???
+              n0: 1859584 0x1FFF000452: ???
+    n0: 45056 in 1 place, below massif's threshold (1.00%)
+  n1: 1728512 0x4006342: _dl_map_object_from_fd (dl-map-segments.h:94)
+   n2: 1728512 0x4008A8B: _dl_map_object (dl-load.c:2466)
+    n1: 1695744 0x400D290: openaux (dl-deps.c:64)
+     n1: 1695744 0x4019569: _dl_catch_exception (dl-error-skeleton.c:196)
+      n1: 1695744 0x400D604: _dl_map_object_deps (dl-deps.c:248)
+       n1: 1695744 0x4003AF9: dl_main (rtld.c:1733)
+        n1: 1695744 0x401864E: _dl_sysdep_start (dl-sysdep.c:253)
+         n1: 1695744 0x4002116: _dl_start (rtld.c:415)
+          n1: 1695744 0x4001096: ??? (in /lib/x86_64-linux-gnu/ld-2.28.so)
+           n1: 1695744 0x1: ???
+            n1: 1695744 0x1FFF000435: ???
+             n1: 1695744 0x1FFF000441: ???
+              n0: 1695744 0x1FFF000452: ???
+    n0: 32768 in 1 place, below massif's threshold (1.00%)
+  n0: 40960 in 3 places, all below massif's threshold (1.00%)
+ n0: 352256 in 3 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=47
+#-----------
+time=206852561
+mem_heap_B=29024256
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=48
+#-----------
+time=206852705
+mem_heap_B=9023488
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
