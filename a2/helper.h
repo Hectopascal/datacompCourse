@@ -14,16 +14,15 @@ int FILELEN;
 int bufferStart;
 int bucketBuffer;
 int totalBuckets;
-const int BUCKETINTERVAL = 100;
 const int CHARTYPES      = 5; 
-int BUFFERSIZE           = 819200;
-int BLOCKSIZE            = 100;
+int BUFFERSIZE           = 409600;
+int BUCKETINTERVAL = 80;
 
 
 FILE* outfile; 
 FILE* infile;
 int indes;
-
+int outdes;
 
 int startPos;
 int* cMap;

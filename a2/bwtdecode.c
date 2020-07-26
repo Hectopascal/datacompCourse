@@ -36,44 +36,40 @@ void initializeGlobal(){
     FILELEN = ftell(infile);
     fseek(infile,0,SEEK_SET);
     if (FILELEN<BUFFERSIZE){
-        if (FILELEN<BLOCKSIZE){
-            BLOCKSIZE = FILELEN;
-        }
         BUFFERSIZE = FILELEN;
     }
+    BUCKETINTERVAL = FILELEN/100000;
+    if(BUCKETINTERVAL < 32)
+        BUCKETINTERVAL = 32;
+
     buffer = malloc(BUFFERSIZE * sizeof(char));
-    bitArray = (int*)calloc((1+ (FILELEN/16)),sizeof(u_int32_t));
+    bitArray = (int*)calloc((1+ (FILELEN/16)),sizeof(int));
     totalBuckets = FILELEN/BUCKETINTERVAL;
     occBucket = malloc(sizeof(int*)*totalBuckets);
     for (int i = 0; i<totalBuckets; ++i){
         occBucket[i] = malloc(sizeof(int)*4);
     }
     cMap = malloc(sizeof(int)*5);
-    //printf("Length of file: %d\n",FILELEN);
-    //printf("Size of Buffer : %d\n",BUFFERSIZE);
-    //printf("Buckets created: %d \n",totalBuckets);
 }
 
 void setChar(int idx, char c){
-    int idx1 = 2*idx;
-    int idx2 = idx1+1;
     switch(c){
         case '\n':
         case 'A': // A & newline is 00
-            setZero(bitArray,idx1);           
-            setZero(bitArray,idx2);            
+            setZero(bitArray,(2*idx));           
+            setZero(bitArray,(2*idx+1));            
             return;
         case 'C': // C 01
-            setZero(bitArray,idx1);            
-            setOne(bitArray,idx2);
+            setZero(bitArray,(2*idx) );            
+            setOne(bitArray,(2*idx+1) );
             return;
         case 'G': // G 10
-            setOne(bitArray,idx1);            
-            setZero(bitArray,idx2);           
+            setOne(bitArray,(2*idx));            
+            setZero(bitArray,(2*idx+1));           
             return; 
         case 'T': // T 11
-            setOne(bitArray,idx1);            
-            setOne(bitArray,idx2);            
+            setOne(bitArray,(2*idx));            
+            setOne(bitArray,(2*idx+1));            
             return;
         default:
             return;
@@ -82,51 +78,18 @@ void setChar(int idx, char c){
 }
 
 char getChar(int idx){
-    int idx1 = idx*2;
-    int idx2 = idx1+1;
-    if ( isOne(bitArray,idx1)){
-        if ( isOne(bitArray,idx2)) return 'T';//11
+    if ( isOne(bitArray,(idx*2))){
+        if ( isOne(bitArray,(2*idx+1))) return 'T';//11
         //10
         return 'G';
     } else{
-        if (isOne(bitArray,idx2)) return 'C'; //01
+        if (isOne(bitArray, (2*idx+1))) return 'C'; //01
         //00
         if (idx == startPos){
             return '\n';
         }
         return 'A';
     }
-}
-
-int getCharCode(char c){
-    switch(c) {
-        case '\n':
-            return 0;
-        case 'A':
-            return 1;
-        case 'C':
-            return 2;
-        case 'G':
-            return 3;
-        case 'T':
-            return 4;
-        default:
-            return 5;
-   }
-}
-void printTables(void){ // print cMap and occBuckets
-    for (int i = 0; i<totalBuckets; ++i){
-        printf("Bucket %d \n",i);
-        printf("A %d C %d G %d T %d \n",
-                occBucket[i][0],
-                occBucket[i][1],
-                occBucket[i][2],
-                occBucket[i][3]);
-    }
-
-    printf("TOTAL CMAP COUNT: nl %d A %d C %d G %d T %d \n",
-            cMap[0],cMap[1],cMap[2],cMap[3],cMap[4]);
-
 }
 
 
@@ -137,7 +100,7 @@ int constructTablesL(void){
     int charCode;
     bufferStart = 0;
     pread(indes, buffer, BUFFERSIZE, bufferStart);
-    for (int i = 0; i < totalBuckets+1; ++i){
+    for (int i = 0; i < totalBuckets; ++i){
         // if buffer not enough to read to end
         if (bufferStart+BUFFERSIZE < (i+1) * BUCKETINTERVAL){
             bufferStart = i*BUCKETINTERVAL;
@@ -145,22 +108,48 @@ int constructTablesL(void){
         }
         int bucketStart = i*BUCKETINTERVAL-bufferStart;
         int bucketEnd  = bucketStart+BUCKETINTERVAL;
-        if (i == totalBuckets)
-            bucketEnd   = FILELEN-bufferStart;
         for(int j=bucketStart; j<bucketEnd; ++j){
-            charCode = getCharCode(buffer[j]);
+            charCode = -1;
+            switch(buffer[j]) {
+                case '\n': charCode = 0; break;
+                case 'A': charCode = 1; break;
+                case 'C': charCode = 2; break;
+                case 'G': charCode = 3; break;
+                case 'T': charCode = 4; break;
+                default: charCode = -1;
+            }
+
             if (buffer[j] == '\n') startPos = j+bufferStart;
             setChar(j+bufferStart,buffer[j]);
             ++cMap[charCode];
         }
-
-        if (i == totalBuckets)
-            break;
         occBucket[i][0] = cMap[1];
         occBucket[i][1] = cMap[2];
         occBucket[i][2] = cMap[3];
         occBucket[i][3] = cMap[4];
-    } 
+    }
+    
+    int bucketEnd   = FILELEN-bufferStart;
+    int bucketStart = totalBuckets*BUCKETINTERVAL-bufferStart;
+    for(int j=bucketStart; j<bucketEnd; ++j){
+        charCode = -1;
+        switch(buffer[j]) {
+            case '\n': charCode = 0; break;
+            case 'A': charCode = 1; break;
+            case 'C': charCode = 2; break;
+            case 'G': charCode = 3; break;
+            case 'T': charCode = 4; break;
+            default: charCode = -1;
+        }
+
+        if (buffer[j] == '\n') startPos = j+bufferStart;
+        setChar(j+bufferStart,buffer[j]);
+        ++cMap[charCode];
+    }
+
+
+
+
     // modify cMap
     int tmp = 0;
     int runningCount = 0;
@@ -192,20 +181,8 @@ int occ(char c, int pos, int code){
 
 }
 
-void seekBuffer(int b,int pos){
-    bufferStart = b*BUCKETINTERVAL;
-    if (bufferStart < 0)
-        bufferStart = 0;
-    if(bufferStart + BLOCKSIZE >FILELEN){
-        bufferStart = FILELEN-BLOCKSIZE;
-    }
-    pread(indes, buffer, BLOCKSIZE, bufferStart);
-}
-
-
 void decodeInputL(int startIdx){
-
-    //setvbuf (outfile , NULL , _IOFBF , 0 );
+    setvbuf (outfile , NULL , _IOFBF , 0 );
     char curVal = '\n';
     int valIdx = startIdx;
     char decoded[BUFFERSIZE];
@@ -219,6 +196,7 @@ void decodeInputL(int startIdx){
             //printf("%d %d %d %d\n",i, FILELEN-i, BUFFERSIZE, remChar);
             fseek(outfile,i,SEEK_SET); 
             fwrite(decoded,1,BUFFERSIZE,outfile);
+            //pwrite(outdes,decoded,BUFFERSIZE,i);
             remChar -= BUFFERSIZE;
             dIdx = BUFFERSIZE;
         }
@@ -239,10 +217,11 @@ void decodeInputL(int startIdx){
     }
     if (remChar > 0){
         //printf("remaining char %d\n",remChar);
-        fseek(outfile,0,SEEK_SET); 
         char *remDecode = malloc(sizeof(char)*remChar);
         strncpy(remDecode,decoded+(BUFFERSIZE-remChar),remChar);
+        fseek(outfile,0,SEEK_SET); 
         fputs(remDecode,outfile);
+        //pwrite(outdes,remDecode,remChar,0);
         free(remDecode);
     }
 }
