@@ -9,11 +9,11 @@ int bufferStart;
 int bucketBuffer;
 int totalBuckets;
 const int SMALLFILE      = 3000000;
-int BUFFERSIZE     = 819200;
-const int BUCKETINTERVAL = 128;
+int BUFFERSIZE           = 819200;
+const int BUCKETINTERVAL = 1000;
 const int CHARTYPES = 5; 
-size_t MAXQUERY = 100;
-int BLOCKSIZE      = 128;
+size_t MAXQUERY     = 101;
+int BLOCKSIZE       = 1000;
 
 
 FILE* outfile; 
@@ -25,13 +25,11 @@ int** occBucket;
 char* buffer;
 char* query;
 int occ(char c, int pos,int code);
-int constructTablesL(void);
+void constructTables(void);
 int constructTablesS(char* code);
-void  decodeInputL(int startIdx);
-void  decodeInputS(int startIdx,char* code);
 void seekBucket(int b);
 void initializeGlobal(void);
 void cleanupGlobal(void);
 int getCharCode(char c);
-
+void printTables(void);
 
