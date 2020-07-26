@@ -10,16 +10,10 @@ int main (int argc, char* argv[])
         exit(0); 
     }
     initializeGlobal();
-    if(FILELEN < SMALLFILE+1){
-        bufferStart = 0; 
-        fseek(infile,bufferStart,SEEK_SET);
-        fread(buffer, FILELEN,1,infile);
-        int startIdx = constructTablesS(buffer);
-        decodeInputS(startIdx,buffer);
-    } else {
-        int startIdx = constructTablesL();
-        decodeInputL(startIdx);
-    }
+    
+    int startIdx = constructTablesL();
+    decodeInputL(startIdx);
+    
     fclose(infile);
     close(indes);
     fclose(outfile);
@@ -28,35 +22,31 @@ int main (int argc, char* argv[])
 }
 
 void cleanupGlobal(){
-    if (FILELEN < SMALLFILE+1){
-        free(rank);
-    }else{
-        for (int i =0 ; i< totalBuckets; ++i){
-            free(occBucket[i]);
-        }
-        free(occBucket);
+    for (int i =0 ; i< totalBuckets; ++i){
+        free(occBucket[i]);
     }
+    free(occBucket);
+    free(bitArray);
     free(cMap);
-    free(buffer);
 }
 
 void initializeGlobal(){
+    setvbuf (infile , NULL , _IOFBF , 0 );
     fseek(infile, 0, SEEK_END);
     FILELEN = ftell(infile);
     fseek(infile,0,SEEK_SET);
-    //bleb
-    if(FILELEN < SMALLFILE+1){
-        buffer = malloc(FILELEN * sizeof(char));
-        rank = malloc(sizeof(int)*FILELEN);
-    }else {
-        buffer = malloc(BUFFERSIZE * sizeof(char));
-        rank = malloc(sizeof(int)*BUFFERSIZE);
-
-        totalBuckets = FILELEN/BUCKETINTERVAL;
-        occBucket = malloc(sizeof(int*)*totalBuckets);
-        for (int i = 0; i<totalBuckets; ++i){
-            occBucket[i] = malloc(sizeof(int)*4);
+    if (FILELEN<BUFFERSIZE){
+        if (FILELEN<BLOCKSIZE){
+            BLOCKSIZE = FILELEN;
         }
+        BUFFERSIZE = FILELEN;
+    }
+    buffer = malloc(BUFFERSIZE * sizeof(char));
+    bitArray = (int*)calloc((1+ (FILELEN/16)),sizeof(u_int32_t));
+    totalBuckets = FILELEN/BUCKETINTERVAL;
+    occBucket = malloc(sizeof(int*)*totalBuckets);
+    for (int i = 0; i<totalBuckets; ++i){
+        occBucket[i] = malloc(sizeof(int)*4);
     }
     cMap = malloc(sizeof(int)*5);
     //printf("Length of file: %d\n",FILELEN);
@@ -64,7 +54,49 @@ void initializeGlobal(){
     //printf("Buckets created: %d \n",totalBuckets);
 }
 
+void setChar(int idx, char c){
+    int idx1 = 2*idx;
+    int idx2 = idx1+1;
+    switch(c){
+        case '\n':
+        case 'A': // A & newline is 00
+            setZero(bitArray,idx1);           
+            setZero(bitArray,idx2);            
+            return;
+        case 'C': // C 01
+            setZero(bitArray,idx1);            
+            setOne(bitArray,idx2);
+            return;
+        case 'G': // G 10
+            setOne(bitArray,idx1);            
+            setZero(bitArray,idx2);           
+            return; 
+        case 'T': // T 11
+            setOne(bitArray,idx1);            
+            setOne(bitArray,idx2);            
+            return;
+        default:
+            return;
+    }
 
+}
+
+char getChar(int idx){
+    int idx1 = idx*2;
+    int idx2 = idx1+1;
+    if ( isOne(bitArray,idx1)){
+        if ( isOne(bitArray,idx2)) return 'T';//11
+        //10
+        return 'G';
+    } else{
+        if (isOne(bitArray,idx2)) return 'C'; //01
+        //00
+        if (idx == startPos){
+            return '\n';
+        }
+        return 'A';
+    }
+}
 
 int getCharCode(char c){
     switch(c) {
@@ -102,49 +134,33 @@ void printTables(void){ // print cMap and occBuckets
 // returns position of '\n' character
 int constructTablesL(void){
     // find file length;
-    int startPos = 0;
     int charCode;
     bufferStart = 0;
-    //fseek(infile,bufferStart,SEEK_SET);
-    //fread(buffer, BUFFERSIZE,1,infile);
     pread(indes, buffer, BUFFERSIZE, bufferStart);
-    for (int i = 0; i < totalBuckets; ++i){
+    for (int i = 0; i < totalBuckets+1; ++i){
         // if buffer not enough to read to end
         if (bufferStart+BUFFERSIZE < (i+1) * BUCKETINTERVAL){
             bufferStart = i*BUCKETINTERVAL;
-            //fseek(infile,bufferStart,SEEK_SET);
-            //fread(buffer, BUFFERSIZE,1,infile);
             pread(indes, buffer, BUFFERSIZE, bufferStart);
         }
         int bucketStart = i*BUCKETINTERVAL-bufferStart;
-        for(int j=bucketStart; j<bucketStart+BUCKETINTERVAL; ++j){
+        int bucketEnd  = bucketStart+BUCKETINTERVAL;
+        if (i == totalBuckets)
+            bucketEnd   = FILELEN-bufferStart;
+        for(int j=bucketStart; j<bucketEnd; ++j){
             charCode = getCharCode(buffer[j]);
             if (buffer[j] == '\n') startPos = j+bufferStart;
+            setChar(j+bufferStart,buffer[j]);
             ++cMap[charCode];
         }
+
+        if (i == totalBuckets)
+            break;
         occBucket[i][0] = cMap[1];
         occBucket[i][1] = cMap[2];
         occBucket[i][2] = cMap[3];
         occBucket[i][3] = cMap[4];
     } 
-
-    if( totalBuckets * BUCKETINTERVAL < FILELEN){
-        if (bufferStart+BUFFERSIZE < FILELEN){
-            bufferStart = totalBuckets*BUCKETINTERVAL;
-            //fseek(infile,bufferStart,SEEK_SET);
-            //fread(buffer, BUFFERSIZE,1,infile);
-            pread(indes, buffer, BUFFERSIZE, bufferStart);
-        }
-        int start =  totalBuckets*BUCKETINTERVAL-bufferStart;
-        for(int i = start; i< FILELEN-bufferStart; ++i){
-            charCode = getCharCode(buffer[i]);
-            if (buffer[i] == '\n'){
-                startPos = i+bufferStart;
-            }
-            ++cMap[charCode];
-        }
-    }
-
     // modify cMap
     int tmp = 0;
     int runningCount = 0;
@@ -155,38 +171,6 @@ int constructTablesL(void){
     }
     
     free(buffer);
-    if (FILELEN / BUCKETINTERVAL < 60000){
-        BLOCKSIZE = BUCKETINTERVAL * 5000;
-    }else{
-        BLOCKSIZE = BUCKETINTERVAL;
-    }
-    buffer = malloc(BLOCKSIZE * sizeof(char));
-    setvbuf (infile , buffer , _IOFBF , BLOCKSIZE );
-    return startPos;
-}
-
-
-int constructTablesS(char* code){
-    int startPos = 0;
-    for (int i = 0; i< FILELEN;++i){
-        if (code[i]=='\n') startPos = i;
-        rank[i] = cMap[getCharCode(code[i])];
-        ++cMap[getCharCode(code[i])];     
-    }
-    //modify cMap to the less than values
-    int runningValue = 0;
-    int tmp = 0;
-    for (int i = 0; i < CHARTYPES; ++i){
-        if (i == 0){ // newline char
-            cMap[0] = 0;
-            ++runningValue;
-            continue;
-        }
-        tmp = cMap[i];
-        cMap[i] = runningValue;
-        runningValue += tmp;
-    }
-
     return startPos;
 }
 
@@ -195,16 +179,17 @@ int occ(char c, int pos, int code){
         return 0;
     int count = 0;
     int b = pos/BUCKETINTERVAL;
-    int start = b*BUCKETINTERVAL - bufferStart;
-    int end = pos - bufferStart;
+    int start = b*BUCKETINTERVAL;
+    int end = pos;
     for(int i =start ;i < end; ++i){
-        if(buffer[i] == c){
+        if(getChar(i) == c){
             ++count;
         }
     }
     if (b == 0)
         return count;
     return count + occBucket[b-1][code-1];
+
 }
 
 void seekBuffer(int b,int pos){
@@ -214,32 +199,9 @@ void seekBuffer(int b,int pos){
     if(bufferStart + BLOCKSIZE >FILELEN){
         bufferStart = FILELEN-BLOCKSIZE;
     }
-    
-    //fseek(infile,bufferStart,SEEK_SET);
-    //fread(buffer, BLOCKSIZE,1, infile);
     pread(indes, buffer, BLOCKSIZE, bufferStart);
 }
 
-/*
-void seekBucket(int b){
-    bucketBuffer = b*BUCKETINTERVAL;
-    fseek(infile,bucketBuffer,SEEK_SET);
-    fread(buffer, BUCKETINTERVAL,1, infile);
-}
-*/
-
-void decodeInputS(int startIdx, char* code){
-    char curVal = '\n';
-    int valIdx = startIdx;
-    char decoded[FILELEN];
-    for(int i = FILELEN-1; i>= 0; --i){
-        decoded[i] = curVal;
-        valIdx = rank[valIdx]+cMap[getCharCode(curVal)];
-        curVal = code[valIdx];
-    }
-    fseek(outfile,0,SEEK_SET);
-    fputs(decoded,outfile);
-}
 
 void decodeInputL(int startIdx){
 
@@ -257,11 +219,9 @@ void decodeInputL(int startIdx){
             //printf("%d %d %d %d\n",i, FILELEN-i, BUFFERSIZE, remChar);
             fseek(outfile,i,SEEK_SET); 
             fwrite(decoded,1,BUFFERSIZE,outfile);
-            //fputs(decoded,outfile);
             remChar -= BUFFERSIZE;
             dIdx = BUFFERSIZE;
         }
-//      printf(" %c %d %d %d \n",curVal,valIdx,occVal,cMap[getCharCode(curVal)]);
         switch(curVal) {
             case '\n': code = 0; break;
             case 'A':  code = 1; break;
@@ -274,9 +234,8 @@ void decodeInputL(int startIdx){
         int occVal = occ(curVal,valIdx,code);
         valIdx = occVal+cMap[code];
         //if(i == FILELEN-50) return;
-        if(valIdx < bufferStart || valIdx >= bufferStart+BLOCKSIZE)
-            seekBuffer(valIdx/BUCKETINTERVAL,valIdx);
-        curVal = buffer[valIdx-bufferStart];
+        curVal = getChar(valIdx);
+        //curVal = buffer[valIdx-bufferStart];
     }
     if (remChar > 0){
         //printf("remaining char %d\n",remChar);
@@ -286,8 +245,5 @@ void decodeInputL(int startIdx){
         fputs(remDecode,outfile);
         free(remDecode);
     }
-    //fseek(outfile,FILELEN,SEEK_SET); 
-    //fputc('\0',outfile);
-
 }
 
